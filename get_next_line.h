@@ -6,8 +6,14 @@
 /*   By: jyou <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:24:25 by jyou              #+#    #+#             */
-/*   Updated: 2020/11/15 16:24:27 by jyou             ###   ########.fr       */
+/*   Updated: 2020/11/15 16:32:46 by jyou             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef __GET_NEXT_LINE_H
+# define __GET_NEXT_LINE_H
+# include <unistd.h>
 
+int			get_next_line(int fd, char **line);
+
+#endif
