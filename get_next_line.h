@@ -15,6 +15,11 @@
 # include <unistd.h>
 # include <stdio.h>
 
+char		*ft_strdup(char *src);
+int			ft_strlen(char *str);
+char		*ft_strchr(char *s, int c);
+char		*ft_strjoin(char *s1, char *s2);
+void		*ft_memcpy(void *dest, void *src, size_t n);
 void		*ft_memmove(void *dest, void *src, size_t n);
 char		*ft_check_rem(char *rem, char **line);
 int			*ft_connect(char **line, char *buf);
