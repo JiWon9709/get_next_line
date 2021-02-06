@@ -12,37 +12,112 @@
 
 #include "get_next_line.h"
 
+void		*ft_memmove(void *dest, void *src, size_t n)
+{
+	size_t			i;
+
+	i = 0;
+	if (dest > src)
+	{
+		while (n > 0)
+		{
+			((char *)dest)[n - 1] = ((char *)src)[n - 1];
+			n--;
+		}
+	}
+	else
+	{
+		while (i < n)
+		{
+			((char *)dest)[i] = ((char *)src)[i];
+			i++;
+		}
+		((char *)dest)[i] = '\0';
+	}
+}
+
+char		*ft_check_rem(char *rem, char **line)
+{
+	char			*p;
+
+	p = NULL;
+	if (rem[0])
+	{
+		if ((p = ft_strchr(rem, '\n')))
+		{
+			*p = '\0';
+			if (!(*line = ft_strdup(rem)))
+				return (NULL);
+			ft_memmove(rem, (p + 1), BUFFER_SIZE - (p - rem));//
+		}
+		else
+		{
+			if (!(*line = ft_strdup(rem)))
+				return (NULL);
+		}
+	}
+	else
+	{
+		if (!(*line = (char *)malloc(sizeof(char) * 1)))
+			return (NULL);
+		*line[0] = '\0';
+	}
+	return (p);
+}
+
+int			*ft_connect(char **line, char *buf)
+{
+	char		*p;
+
+	p = *line;
+	if (!(*line = ft_strjoin(*line, buf)))
+		return (0);
+	free(p);
+	return (1);
+}
+
+char		*ft_search_pointer(char **line, char *buf)
+{
+	char		*p;
+
+	p = NULL;
+	if ((p = ft_strchr(buf, '\n')))
+	{
+		*p = '\0';
+		if (!ft_connect(line, buf))
+			return (NULL);
+		p += 1;
+		ft_memmove(buf, p, BUFFER_SIZE - (p - buf) + 1);
+	}
+	else
+	{
+		if (!ft_connect(line, buf))
+			return (NULL);
+		buf[0] = '\0';
+	}
+	return (p);
+}
+
 int			get_next_line(int fd, char **line)
 {
-	char			buff[BUFFER_SIZE + 1]; // 파일전체 버퍼
-	static char		*str[65534]; // 백업 장소
-	char			*temp;
-	int				i;
-	int				check_line;
+	int				read_fd; // 파일전체 버퍼
+	static char		*buf[65534]; // 백업 장소
+	char			*pointer;
 
-	if (!line || fd < 0 || BUFFER_SIZE < 1 || read(fd, buff, 0) < 0) // err
+	if (line == NULL || BUFFER_SIZE < 1 || read(fd, buf, 0) < 0) // err
 		return (-1);
-	// 1. 백업 장소에 버퍼 사이즈만큼 초기화
-	// 2. 버퍼 마지막 널문자로 넣기.
-	// 3. 백업 장소에 버퍼 연결하기
-	// 4. 백업장소 주소 지우기.
-	// 5. 백업 장소에서 개행문자 찾기
-	// 6. err 인지 체크하기
-	// 7. 이거나 
-	// strchr 로 \n 나올때까지 인덱스 찾아서 substr 해서 line[i]에 저장.
-	// 터지면 free
-	// 끝이 eof 면 0
-	// 아니면 1
-	str = buff;
-	while ((check_line = read(fd, buff, BUFFER_SIZE)) > 0)
+	pointer = ft_check_rem(buf, line);
+	if (line == NULL)
+		return (-1);
+	read_fd = -1;
+	while (!pointer && (read_fd = read(fd, buf, BUFFER_SIZE)))
 	{
-		if (ft_strchr(str, '\n') > 0)
-		{
-			i = ft_strchr(str, '\n'); // 개행문자 나올때까지 인덱스 구하기
-			buff[i] = '\0'; // 마지막 널문자 넣어주기.
-			ft_substr(line[i], str, i); // substr 으로 line[i] 에 저장.
-			// 나머지 buff의 시작점 바꾸기.
-		}
-		i++;
+		buf[read_fd] = '\0';
+		pointer = ft_search_ptr(line, buf);
+		if (line == NULL)
+			return (-1);
 	}
+	if (read_fd == 0 && buf[0] == '\0')
+		return (0);
+	return (1);
 }
