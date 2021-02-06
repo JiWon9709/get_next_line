@@ -6,7 +6,7 @@
 /*   By: jyou <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:23:35 by jyou              #+#    #+#             */
-/*   Updated: 2020/11/17 19:36:53 by jyou             ###   ########.fr       */
+/*   Updated: 2021/02/06 21:32:54 by jyou             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char		*ft_check_rem(char *rem, char **line)
 			*p = '\0';
 			if (!(*line = ft_strdup(rem)))
 				return (NULL);
-			ft_memmove(rem, (p + 1), BUFFER_SIZE - (p - rem));//
+			ft_memmove(rem, (p + 1), BUFFER_SIZE - (p - rem));
 		}
 		else
 		{
@@ -100,13 +100,14 @@ char		*ft_search_pointer(char **line, char *buf)
 
 int			get_next_line(int fd, char **line)
 {
-	int				read_fd; // 파일전체 버퍼
-	static char		*buf[65534]; // 백업 장소
+	int				read_fd;
+	static char		*buf[65534];
 	char			*pointer;
 
-	if (line == NULL || BUFFER_SIZE < 1 || read(fd, buf, 0) < 0) // err
+	if (line == NULL || BUFFER_SIZE < 1 || read(fd, buf, 0) < 0)
 		return (-1);
 	pointer = ft_check_rem(buf, line);
+	printf("%s", *pointer);
 	if (line == NULL)
 		return (-1);
 	read_fd = -1;
@@ -120,4 +121,26 @@ int			get_next_line(int fd, char **line)
 	if (read_fd == 0 && buf[0] == '\0')
 		return (0);
 	return (1);
+}
+
+int			main(int ac, char **av)
+{
+
+		char* line;
+			int	check;
+				int	fd;
+
+					fd = open("test.txt", O_RDONLY);
+						while ((check = get_next_line(fd, &line)) > 0)
+								{
+
+											printf("%s\n", line);
+
+													free(line);
+
+									}
+							printf("%s\n", line);
+	free(line);
+									return (0);
+
 }
