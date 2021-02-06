@@ -6,13 +6,13 @@
 /*   By: jyou <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:23:35 by jyou              #+#    #+#             */
-/*   Updated: 2021/02/06 21:32:54 by jyou             ###   ########.fr       */
+/*   Updated: 2021/02/06 23:24:17 by jyou             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void		*ft_memmove(void *dest, void *src, size_t n)
+void		ft_memmove(void *dest, void *src, size_t n)
 {
 	size_t			i;
 
@@ -65,7 +65,7 @@ char		*ft_check_rem(char *rem, char **line)
 	return (p);
 }
 
-int			*ft_connect(char **line, char *buf)
+int			ft_connect(char **line, char *buf)
 {
 	char		*p;
 
@@ -101,46 +101,23 @@ char		*ft_search_pointer(char **line, char *buf)
 int			get_next_line(int fd, char **line)
 {
 	int				read_fd;
-	static char		*buf[65534];
+	static char		buf[(BUFFER_SIZE < 1) ? (1) : (BUFFER_SIZE + 1)] = {0};
 	char			*pointer;
 
 	if (line == NULL || BUFFER_SIZE < 1 || read(fd, buf, 0) < 0)
 		return (-1);
 	pointer = ft_check_rem(buf, line);
-	printf("%s", *pointer);
 	if (line == NULL)
 		return (-1);
 	read_fd = -1;
 	while (!pointer && (read_fd = read(fd, buf, BUFFER_SIZE)))
 	{
 		buf[read_fd] = '\0';
-		pointer = ft_search_ptr(line, buf);
+		pointer = ft_search_pointer(line, buf);
 		if (line == NULL)
 			return (-1);
 	}
 	if (read_fd == 0 && buf[0] == '\0')
 		return (0);
 	return (1);
-}
-
-int			main(int ac, char **av)
-{
-
-		char* line;
-			int	check;
-				int	fd;
-
-					fd = open("test.txt", O_RDONLY);
-						while ((check = get_next_line(fd, &line)) > 0)
-								{
-
-											printf("%s\n", line);
-
-													free(line);
-
-									}
-							printf("%s\n", line);
-	free(line);
-									return (0);
-
 }
