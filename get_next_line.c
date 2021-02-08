@@ -101,7 +101,7 @@ char		*ft_search_pointer(char **line, char *buf)
 int			get_next_line(int fd, char **line)
 {
 	int				read_fd;
-	static char		buf[(BUFFER_SIZE < 1) ? (1) : (BUFFER_SIZE + 1)] = {0};
+	static char		buf[BUFFER_SIZE + 1] = {0};
 	char			*pointer;
 
 	if (line == NULL || BUFFER_SIZE < 1 || read(fd, buf, 0) < 0)
